@@ -9,6 +9,12 @@ set -euo pipefail
 : "${TENSORZERO_POSTGRES_URL:?TENSORZERO_POSTGRES_URL must be set (reference to the Postgres service)}"
 export TENSORZERO_GATEWAY_BIND_ADDRESS="${TENSORZERO_GATEWAY_BIND_ADDRESS:-[::]:${PORT:-3000}}"
 
+# Railway keeps optional variables as empty strings; drop empty provider keys so
+# the gateway treats them as unset.
+for v in $(compgen -e); do
+  case "$v" in *_API_KEY|*_API_KEY_ID|AWS_*|AZURE_*) [ -z "${!v}" ] && unset "$v" ;; esac
+done
+
 # 1. Migrations (sqlx takes an advisory lock, so overlapping deploys are safe).
 ok=0
 for i in $(seq 1 60); do

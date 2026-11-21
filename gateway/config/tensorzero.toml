@@ -1,0 +1,9 @@
+# Base configuration baked into the Railway template.
+# Add your own models, functions, metrics, ... with the TENSORZERO_CONFIG_TOML
+# variable on the Gateway service (loaded next to this file), or fork the repo.
+
+[gateway]
+# Every endpoint except /status and /health needs a TensorZero API key.
+auth.enabled = true
+# Fail on start if Postgres (the observability store) isn't reachable.
+observability.enabled = true
